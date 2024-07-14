@@ -10,9 +10,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
-	totalCount := 4
-	req := httptest.NewRequest("GET", "/cafe?count=5&city=moscow", nil)
+func TestMainHandlerWhenStatusAndBodyOk(t *testing.T) {
+	req := httptest.NewRequest("GET", "/cafe?count=4&city=moscow", nil)
 
 	responseRecorder := httptest.NewRecorder()
 	handler := http.HandlerFunc(mainHandle)
@@ -23,6 +22,17 @@ func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
 	body := responseRecorder.Body.String()
 	require.NotEmpty(t, body)
 
+}
+
+func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
+	totalCount := 4
+	req := httptest.NewRequest("GET", "/cafe?count=5&city=moscow", nil)
+
+	responseRecorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(mainHandle)
+	handler.ServeHTTP(responseRecorder, req)
+
+	body := responseRecorder.Body.String()
 	cafes := strings.Split(body, ",")
 	assert.Len(t, cafes, totalCount)
 }
